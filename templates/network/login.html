@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In / Pulse Social</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    <div class="auth-card">
+      <div class="auth-header-box">
+        <a href="{% url 'feed' %}" class="auth-logo-symbol">⚡</a>
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-subtitle">Sign in to your Pulse account to join the conversation.</p>
+      </div>
+
+      {% if error_message %}
+        <div class="error-alert-banner">
+          {{ error_message }}
+        </div>
+      {% endif %}
+
+      <!-- EXAMPLE CREDENTIALS CALLOUT -->
+      <div style="background: rgba(99, 102, 241, 0.12); border: 1px solid var(--border-focus); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 20px; font-size: 13px;">
+        <div style="font-weight: 700; color: var(--accent-primary); margin-bottom: 6px; display:flex; align-items:center; gap:6px;">
+          <span>🔑</span> <span>Example Test Account:</span>
+        </div>
+        <div style="margin-bottom: 4px;">
+          <span style="color:var(--text-secondary);">Username / Email:</span> 
+          <code style="color:var(--text-primary); background:var(--bg-tertiary); padding:2px 8px; border-radius:4px; font-weight:600;">rithi@gmail.com</code>
+        </div>
+        <div>
+          <span style="color:var(--text-secondary);">Password:</span> 
+          <code style="color:var(--text-primary); background:var(--bg-tertiary); padding:2px 8px; border-radius:4px; font-weight:600;">Rithi@2008</code>
+        </div>
+      </div>
+
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+
+        <div class="form-group">
+          <label class="form-label" for="username">Username or Email</label>
+          <input type="text" id="username" name="username" class="form-input" placeholder="rithi@gmail.com" value="rithi@gmail.com" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" value="Rithi@2008" required>
+        </div>
+
+        <button type="submit" class="auth-btn-primary">
+          Sign In
+        </button>
+      </form>
+
+      <!-- DEMO QUICK LOGIN SECTION -->
+      <div class="auth-divider">Or 1-click test with accounts</div>
+
+      <div class="demo-accounts-grid">
+        <a href="{% url 'quick_login' 'rithi@gmail.com' %}" class="demo-account-btn" style="grid-column: 1 / -1; border-color: var(--accent-primary); background: rgba(99, 102, 241, 0.15);">
+          <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=rithi@gmail.com" alt="Rithi">
+          <div style="min-width:0;">
+            <div class="demo-uname" style="color:var(--accent-primary);">⚡ One-Click Login as Rithi (rithi@gmail.com)</div>
+            <div class="demo-role">Password: Rithi@2008</div>
+          </div>
+        </a>
+        <a href="{% url 'quick_login' 'alex_rivera' %}" class="demo-account-btn">
+          <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=alex_rivera" alt="Alex">
+          <div style="min-width:0;">
+            <div class="demo-uname">Alex Rivera</div>
+            <div class="demo-role">Full-Stack Dev</div>
+          </div>
+        </a>
+
+        <a href="{% url 'quick_login' 'sophia_chen' %}" class="demo-account-btn">
+          <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=sophia_chen" alt="Sophia">
+          <div style="min-width:0;">
+            <div class="demo-uname">Sophia Chen</div>
+            <div class="demo-role">Product Designer</div>
+          </div>
+        </a>
+
+        <a href="{% url 'quick_login' 'marcus_v' %}" class="demo-account-btn">
+          <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=marcus_v" alt="Marcus">
+          <div style="min-width:0;">
+            <div class="demo-uname">Marcus Vance</div>
+            <div class="demo-role">Backend Eng</div>
+          </div>
+        </a>
+
+        <a href="{% url 'quick_login' 'elena_ai' %}" class="demo-account-btn">
+          <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=elena_ai" alt="Elena">
+          <div style="min-width:0;">
+            <div class="demo-uname">Elena Rostova</div>
+            <div class="demo-role">AI Researcher</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="auth-switch-text">
+        Don't have an account? <a href="{% url 'register' %}">Sign up for free</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

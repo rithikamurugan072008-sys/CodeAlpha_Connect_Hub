@@ -1,0 +1,41 @@
+{% extends 'network/base.html' %}
+{% load static %}
+
+{% block title %}Saved Posts / Pulse{% endblock %}
+
+{% block content %}
+  <header style="margin-bottom:24px;">
+    <h1 style="font-family:var(--font-heading); font-size:26px; font-weight:800; margin-bottom:6px;">
+      Saved Posts
+    </h1>
+    <p style="color:var(--text-muted); font-size:14px;">
+      All your bookmarked articles, code snippets, and inspirations in one place.
+    </p>
+  </header>
+
+  <div id="posts-feed-container">
+    {% for post in page_obj %}
+      {% include 'network/post_card.html' with post=post %}
+    {% empty %}
+      <div class="empty-state-card">
+        <div class="empty-state-icon">🔖</div>
+        <h3 class="empty-state-title">No saved posts yet</h3>
+        <p class="empty-state-subtitle">Click the bookmark icon on any post across your feed to save it for later.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if page_obj.has_other_pages %}
+    <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin:32px 0;">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn-secondary">← Previous</a>
+      {% endif %}
+      <span style="font-size:14px; color:var(--text-muted);">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn-secondary">Next →</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

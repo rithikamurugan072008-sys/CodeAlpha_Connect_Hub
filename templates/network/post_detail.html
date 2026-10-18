@@ -1,0 +1,16 @@
+{% extends 'network/base.html' %}
+{% load static %}
+{% load social_extras %}
+
+{% block title %}Post by @{{ post.author.username }} / Pulse{% endblock %}
+
+{% block content %}
+  <div style="margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+    <a href="javascript:history.back()" class="btn-secondary" style="padding:6px 14px; font-size:13px;">
+      <span>←</span> <span>Back</span>
+    </a>
+    <h2 style="font-size:18px; font-weight:700;">Conversation</h2>
+  </div>
+
+  {% include 'network/post_card.html' with post=post %}
+{% endblock %}

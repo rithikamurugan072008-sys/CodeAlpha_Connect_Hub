@@ -1,0 +1,136 @@
+{% extends 'network/base.html' %}
+{% load static %}
+
+{% block title %}Feed / Pulse{% endblock %}
+
+{% block content %}
+  <!-- STICKY FEED HEADER -->
+  <header class="feed-header-bar">
+    <div class="feed-tabs">
+      <a href="{% url 'feed' %}?tab=for-you" class="feed-tab-btn {% if tab == 'for-you' %}active{% endif %}">
+        <span>✨</span>
+        <span>For You</span>
+      </a>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'feed' %}?tab=following" class="feed-tab-btn {% if tab == 'following' %}active{% endif %}">
+          <span>👥</span>
+          <span>Following</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">
+      ☀️
+    </button>
+  </header>
+
+  <!-- SEARCH BANNER IF FILTERED -->
+  {% if search_query %}
+    <div style="background:rgba(99,102,241,0.1); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:14px 20px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+      <div>Showing results for: <strong style="color:var(--accent-primary);">"{{ search_query }}"</strong></div>
+      <a href="{% url 'feed' %}" style="font-size:13px; color:var(--text-muted); text-decoration:underline;">Clear filter</a>
+    </div>
+  {% endif %}
+
+  <!-- POST COMPOSER -->
+  {% if request.user.is_authenticated %}
+    <section class="composer-card" aria-label="Create a post">
+      <form id="composer-form" enctype="multipart/form-data">
+        <div class="composer-top-row">
+          <img src="{{ request.user.profile.get_avatar_url }}" alt="{{ request.user.username }}" class="composer-avatar">
+          <div class="composer-input-area">
+            <textarea id="composer-textarea" name="content" class="composer-textarea" placeholder="What's happening in your universe? Share code, ideas, or insights..." rows="3"></textarea>
+
+            <div id="composer-preview-wrapper" class="composer-image-preview-wrapper" style="display:none;">
+              <img id="composer-preview-img" src="" alt="Upload preview" class="composer-image-preview">
+              <button type="button" id="remove-preview-btn" class="remove-preview-btn" title="Remove photo">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="composer-bottom-bar">
+          <div class="composer-actions-left">
+            <label for="post-image-input" class="composer-action-btn" title="Add Image" style="cursor:pointer;">
+              <span>🖼️</span>
+              <span>Photo</span>
+            </label>
+            <input type="file" id="post-image-input" name="image" accept="image/*" style="display:none;">
+
+            <button type="button" class="composer-action-btn" onclick="insertComposerTag('#WebDevelopment')">
+              <span>#WebDev</span>
+            </button>
+            <button type="button" class="composer-action-btn" onclick="insertComposerTag('#AI')">
+              <span>#AI</span>
+            </button>
+          </div>
+
+          <button type="submit" id="composer-submit-btn" class="composer-submit-btn">
+            <span>Post</span>
+            <span style="font-size:16px;">🚀</span>
+          </button>
+        </div>
+      </form>
+    </section>
+  {% else %}
+    <div class="composer-card" style="text-align:center; padding:28px;">
+      <h3 style="font-size:18px; margin-bottom:8px;">Join the Conversation</h3>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">Sign in to publish posts, like, comment, and connect with people.</p>
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <a href="{% url 'login' %}" class="btn-secondary">Sign In</a>
+        <a href="{% url 'register' %}" class="composer-submit-btn" style="padding:8px 20px;">Create Account</a>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- POSTS FEED LIST -->
+  <div id="posts-feed-container">
+    {% for post in page_obj %}
+      {% include 'network/post_card.html' with post=post %}
+    {% empty %}
+      <div class="empty-state-card" id="empty-feed-state">
+        <div class="empty-state-icon">🌌</div>
+        <h3 class="empty-state-title">No posts here yet</h3>
+        <p class="empty-state-subtitle">
+          {% if tab == 'following' %}
+            You're not following anyone who has posted yet. Check out "For You" to discover amazing people!
+          {% else %}
+            Be the pioneer! Create the very first post on Pulse today.
+          {% endif %}
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- PAGINATION CONTROLS -->
+  {% if page_obj.has_other_pages %}
+    <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin:32px 0;">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if tab %}&tab={{ tab }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn-secondary">
+          ← Previous
+        </a>
+      {% endif %}
+
+      <span style="font-size:14px; color:var(--text-muted);">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if tab %}&tab={{ tab }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn-secondary">
+          Next →
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function insertComposerTag(tag) {
+    const textarea = document.getElementById('composer-textarea');
+    if (textarea) {
+      textarea.value = (textarea.value + ' ' + tag).trim() + ' ';
+      textarea.focus();
+    }
+  }
+</script>
+{% endblock %}
