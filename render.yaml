@@ -1,0 +1,11 @@
+﻿services:
+  - type: web
+    name: codealpha-pulse
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn social_project.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.1
+      - key: DEBUG
+        value: "True"
