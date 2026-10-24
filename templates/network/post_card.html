@@ -59,16 +59,10 @@
   </footer>
 
   <section class="comments-container" id="comments-section-{{ post.id }}">
-    {% if request.user.is_authenticated %}
-      <form class="comment-input-row" onsubmit="submitComment(event, {{ post.id }})">
-        <input type="text" class="comment-input-box" placeholder="Write a thoughtful comment..." required>
-        <button type="submit" class="comment-submit-btn">Send</button>
-      </form>
-    {% else %}
-      <div style="text-align:center; padding:12px; font-size:13px; color:var(--text-muted); margin-bottom:12px;">
-        <a href="{% url 'login' %}?next={{ request.path }}" style="color:var(--accent-primary); font-weight:600;">Log in</a> to comment on this post.
-      </div>
-    {% endif %}
+    <form class="comment-input-row" onsubmit="submitComment(event, {{ post.id }})">
+      <input type="text" class="comment-input-box" placeholder="Write a thoughtful comment..." required>
+      <button type="submit" class="comment-submit-btn">Send</button>
+    </form>
 
     <div class="comments-list" id="comments-list-{{ post.id }}">
       {% for comment in post.comments.all %}

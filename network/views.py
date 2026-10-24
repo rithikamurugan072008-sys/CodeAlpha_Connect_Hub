@@ -479,77 +479,23 @@ def mark_notifications_read_api(request):
 # ============================================================
 
 def register_view(request):
-    """User registration page."""
-    if request.user.is_authenticated:
-        return redirect('feed')
-
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            
-            # Save bio
-            bio = form.cleaned_data.get('bio', '')
-            if bio:
-                user.profile.bio = bio
-                user.profile.save()
-                
-            login(request, user)
-            return redirect('feed')
-    else:
-        form = UserRegistrationForm()
-
-    return render(request, 'network/register.html', {'form': form})
+    """User registration is bypassed; redirects directly to feed."""
+    return redirect('feed')
 
 
 def login_view(request):
-    """User login page with username or email authentication."""
-    if request.user.is_authenticated:
-        return redirect('feed')
-
-    error_message = None
-    if request.method == 'POST':
-        username_input = request.POST.get('username', '').strip()
-        password_input = request.POST.get('password', '').strip()
-
-        # 1. Try direct authentication (matches username)
-        user = authenticate(request, username=username_input, password=password_input)
-
-        # 2. If failed, attempt lookup by email
-        if user is None:
-            try:
-                user_by_email = User.objects.filter(email__iexact=username_input).first()
-                if user_by_email:
-                    user = authenticate(request, username=user_by_email.username, password=password_input)
-            except Exception:
-                user = None
-
-        if user is not None:
-            login(request, user)
-            next_url = request.GET.get('next') or request.POST.get('next') or 'feed'
-            return redirect(next_url)
-        else:
-            error_message = 'Invalid username/email or password. Please try again.'
-
-    # Available demo users for one-click instant testing
-    demo_users = User.objects.exclude(is_superuser=True)[:5]
-
-    return render(request, 'network/login.html', {
-        'error_message': error_message,
-        'demo_users': demo_users
-    })
+    """Login page is removed/bypassed; redirects directly to feed."""
+    return redirect('feed')
 
 
 def quick_login_api(request, username):
-    """Quick login helper for fast testing between different users."""
+    """Quick login helper for fast testing between different user accounts."""
     user = get_object_or_404(User, username__iexact=username)
     login(request, user)
     return redirect('feed')
 
 
 def logout_view(request):
-    """Log out current user."""
+    """Log out current user and redirect back to feed (auto-login takes over or resets)."""
     logout(request)
-    return redirect('login')
+    return redirect('feed')

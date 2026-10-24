@@ -19,14 +19,10 @@
               <span>✏️</span>
               <span>Edit Profile</span>
             </button>
-          {% elif request.user.is_authenticated %}
+          {% else %}
             <button class="btn-follow {% if is_following %}following{% endif %}" onclick="toggleFollow('{{ profile_user.username }}', this)">
               {% if is_following %}Following{% else %}Follow{% endif %}
             </button>
-          {% else %}
-            <a href="{% url 'login' %}?next={{ request.path }}" class="btn-follow">
-              Follow
-            </a>
           {% endif %}
         </div>
       </div>

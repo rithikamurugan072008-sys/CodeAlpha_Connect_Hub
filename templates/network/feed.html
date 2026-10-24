@@ -71,15 +71,6 @@
         </div>
       </form>
     </section>
-  {% else %}
-    <div class="composer-card" style="text-align:center; padding:28px;">
-      <h3 style="font-size:18px; margin-bottom:8px;">Join the Conversation</h3>
-      <p style="color:var(--text-muted); font-size:14px; margin-bottom:16px;">Sign in to publish posts, like, comment, and connect with people.</p>
-      <div style="display:flex; justify-content:center; gap:12px;">
-        <a href="{% url 'login' %}" class="btn-secondary">Sign In</a>
-        <a href="{% url 'register' %}" class="composer-submit-btn" style="padding:8px 20px;">Create Account</a>
-      </div>
-    </div>
   {% endif %}
 
   <!-- POSTS FEED LIST -->
