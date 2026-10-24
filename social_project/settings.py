@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-&%f$)2*_mw4jb-%8em5u1&mn9tb1p#6l(66bbf*@zql2zp1%=l')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or os.environ.get('SECRET_KEY', 'django-insecure-&%f$)2*_mw4jb-%8em5u1&mn9tb1p#6l(66bbf*@zql2zp1%=l')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', '.onrender.com', '.railway.app', '.vercel.app']
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1', '.onrender.com', '.railway.app', '.vercel.app', '.now.sh']
 render_hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if render_hostname and render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_hostname)
@@ -36,6 +36,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
     'https://*.up.railway.app',
     'https://*.vercel.app',
+    'https://*.now.sh',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
@@ -109,6 +110,20 @@ if database_url:
         )
     except Exception:
         pass
+elif os.environ.get('VERCEL'):
+    # On Vercel serverless environment, filesystem is read-only except /tmp
+    # Copy db.sqlite3 to /tmp so write operations (sessions, logins, posts) don't crash
+    import shutil
+    tmp_db = Path('/tmp') / 'db.sqlite3'
+    if not tmp_db.exists() and (BASE_DIR / 'db.sqlite3').exists():
+        try:
+            shutil.copyfile(BASE_DIR / 'db.sqlite3', tmp_db)
+        except Exception:
+            pass
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': tmp_db,
+    }
 
 
 # Password validation
@@ -147,7 +162,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# In Vercel, static files are compiled into staticfiles_build/static for @vercel/static-build
+if os.environ.get('VERCEL'):
+    STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
+else:
+    STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
