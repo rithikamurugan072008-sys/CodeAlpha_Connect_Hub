@@ -50,11 +50,16 @@
 
         <div class="composer-bottom-bar">
           <div class="composer-actions-left">
-            <label for="post-image-input" class="composer-action-btn" title="Add Image" style="cursor:pointer;">
+            <label for="post-image-input" class="composer-action-btn" title="Upload Photo from Computer" style="cursor:pointer;">
               <span>🖼️</span>
-              <span>Photo</span>
+              <span>Upload Photo</span>
             </label>
             <input type="file" id="post-image-input" name="image" accept="image/*" style="display:none;">
+
+            <button type="button" class="composer-action-btn" onclick="attachSamplePhoto('/media/posts/codealpha_pulse_showcase.jpg')" title="Attach a high-resolution showcase graphic">
+              <span>✨</span>
+              <span>Sample Photo</span>
+            </button>
 
             <button type="button" class="composer-action-btn" onclick="insertComposerTag('#WebDevelopment')">
               <span>#WebDev</span>

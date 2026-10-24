@@ -665,6 +665,40 @@ function escapeHtml(string) {
   return div.innerHTML;
 }
 
+// Insert preset hashtag into composer
+function insertComposerTag(tag) {
+  const textarea = document.getElementById('composer-textarea');
+  if (!textarea) return;
+  const currentVal = textarea.value.trim();
+  if (currentVal) {
+    textarea.value = currentVal + ' ' + tag + ' ';
+  } else {
+    textarea.value = tag + ' ';
+  }
+  textarea.focus();
+}
+
+// 1-Click sample photo attachment helper
+async function attachSamplePhoto(url) {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const file = new File([blob], 'pulse_showcase.jpg', { type: 'image/jpeg' });
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    const fileInput = document.getElementById('post-image-input');
+    const previewWrapper = document.getElementById('composer-preview-wrapper');
+    const previewImg = document.getElementById('composer-preview-img');
+    if (fileInput) fileInput.files = dataTransfer.files;
+    if (previewImg) previewImg.src = url;
+    if (previewWrapper) previewWrapper.style.display = 'inline-block';
+    showToast('Showcase photo attached to your post! ✨', 'success');
+  } catch (err) {
+    console.error(err);
+    showToast('Could not load sample image', 'error');
+  }
+}
+
 // Global initialization on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();

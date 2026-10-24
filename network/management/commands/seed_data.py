@@ -111,30 +111,37 @@ class Command(BaseCommand):
             {
                 'author': 'alex_rivera',
                 'content': "Just completed shipping a brand new responsive glassmorphic dashboard! 🚀 The feeling when micro-animations line up with 60fps smoothness is unmatched. What are your favorite CSS transition properties to play with? #WebDevelopment #Frontend #DesignSystems",
+                'image': 'posts/glassmorphic_dashboard.jpg',
             },
             {
                 'author': 'sophia_chen',
                 'content': "Design tip of the day: High contrast doesn't mean harsh pure black and pure white. Deep rich slates (#0f172a) combined with subtle indigo glows create an atmosphere that feels truly premium and easy on the eyes. 🎨 #UIUX #DesignInspiration #Creatives",
+                'image': 'posts/design_system_tokens.jpg',
             },
             {
                 'author': 'marcus_v',
                 'content': "Optimized our relational database queries today using Django select_related & prefetch_related. Query count dropped from 142 down to just 3! 📉 Database connection latency matters just as much as caching layers. #DjangoPython #BackendDev #DatabaseOptimization",
+                'image': 'posts/database_query_optimization.jpg',
             },
             {
                 'author': 'elena_ai',
                 'content': "Working on autonomous agent workflows today. The shift from single prompt-response loops to agentic systems with memory, self-correction, and tool invocation is redefining software engineering! 🤖⚡ What agents are you building? #ArtificialIntelligence #MachineLearning #TechInnovation",
+                'image': 'posts/ai_agent_workflow.jpg',
             },
             {
                 'author': 'maya_cloud',
                 'content': "Migrated another batch of stateless workloads to Kubernetes multi-cluster today with zero downtime. Automated failover tests passed on the first run! ☁️ Celebrate the small wins, team! #CloudNative #DevOps #Kubernetes",
+                'image': 'posts/kubernetes_cloud_cluster.jpg',
             },
             {
                 'author': 'alex_rivera',
                 'content': "Building social applications with Django and clean vanilla JavaScript is surprisingly refreshing. No heavy bundle sizes, instant loads, and complete control over every pixel. Simplicity is an art form. 💻✨ #WebDev #FullStack #JavaScript",
+                'image': 'posts/django_vanilla_code.jpg',
             },
             {
                 'author': 'sophia_chen',
                 'content': "Working on a new icon library with 2px optical stroke widths. Consistency across icons makes user interfaces feel 10x more polished. Here's to details that users feel even if they don't consciously notice them! 📐 #VisualDesign #Iconography",
+                'image': 'posts/icon_design_system.jpg',
             }
         ]
 
@@ -142,7 +149,8 @@ class Command(BaseCommand):
         for p in posts_data:
             post = Post.objects.create(
                 author=created_users[p['author']],
-                content=p['content']
+                content=p['content'],
+                image=p.get('image', '')
             )
             created_posts.append(post)
 
